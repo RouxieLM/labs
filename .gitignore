@@ -1,2 +1,3 @@
 /k8s_HA/.vagrant
 /k8s_HA/master1.pub
+/k8s_HA/vagrant-provisioning.log
