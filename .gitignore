@@ -1,2 +1,2 @@
-master1.pub
-/.vagrant
+/k8s_HA/.vagrant
+/k8s_HA/master1.pub
