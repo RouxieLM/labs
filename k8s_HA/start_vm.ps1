@@ -3,7 +3,6 @@ $loc = "F:\Repo\Vagrant"
 $vmList = @(
   "master-1",
   "master-2",
-  "master-2",
   "master-3",
   "worker-1",
   "worker-2",
