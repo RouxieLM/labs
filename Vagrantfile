@@ -1,0 +1,20 @@
+nodes = eval(File.read("nodes.rb"))
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bookworm64"
+
+  nodes.each do |node|
+    config.vm.define node[:name] do |vm_config|
+      vm_config.vm.hostname = node[:name]
+      vm_config.vm.network "private_network", ip: node[:ip]
+
+      vm_config.vm.provider "virtualbox" do |vm|
+        vm.name = node[:name]
+        vm.memory = node[:memory]
+        vm.cpus = node[:cpus]
+      end
+
+      vm_config.vm.provision "shell", path: "provision.sh"
+    end
+  end
+end
