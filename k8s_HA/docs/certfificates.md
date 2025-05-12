@@ -1,12 +1,10 @@
----
-
 ## 📦 Components
 
-- **3 Control Plane Nodes**: `m1`, `m2`, `m3`
-- **3 Worker Nodes**: `w1`, `w2`, `w3`
-- **1 Load Balancer**: `lb`
-- **TLS Certificates**: Created with `openssl`
-- **Service CIDR**: `10.96.0.0/24`
+- **3 Control Plane Nodes**: `m1`, `m2`, `m3`  
+- **3 Worker Nodes**: `w1`, `w2`, `w3`  
+- **1 Load Balancer**: `lb`  
+- **TLS Certificates**: Created with `openssl`  
+- **Service CIDR**: `10.96.0.0/24`  
 
 ---
 
@@ -21,7 +19,7 @@ CONTROL03=$(getent hosts m3 | awk '{ print $1 }')
 LOADBALANCER=$(getent hosts lb | awk '{ print $1 }')
 
 SERVICE_CIDR=10.96.0.0/24
-API_SERVICE=$(echo $SERVICE_CIDR | awk 'BEGIN {FS="."} ; { printf("%s.%s.%s.1", $1, $2, $3) }')
+API_SERVICE=$(echo $SERVICE_CIDR | cut -d/ -f1 | awk -F. '{ printf "%s.%s.%s.1", $1, $2, $3 }')
 
 # Print values
 echo "CONTROL01: $CONTROL01"
@@ -64,8 +62,6 @@ IP.6 = 127.0.0.1
 EOF
 ```
 
-This configuration ensures your API server certificate is valid for all possible endpoints used by nodes and clients.
-
 ---
 
 ## 📤 Step 3: Distribute Certificates to Nodes
@@ -81,7 +77,7 @@ for instance in m1 m2 m3; do
     etcd-server.key etcd-server.crt \
     kube-controller-manager.key kube-controller-manager.crt \
     kube-scheduler.key kube-scheduler.crt \
-    ${instance}:~/
+    ${instance}:~/ || { echo "❌ Failed to copy to $instance"; exit 1; }
 done
 ```
 
@@ -89,8 +85,6 @@ done
 
 ```bash
 for instance in w1 w2 w3; do
-  scp ca.crt kube-proxy.crt kube-proxy.key ${instance}:~/
+  scp ca.crt kube-proxy.crt kube-proxy.key ${instance}:~/ || { echo "❌ Failed to copy to $instance"; exit 1; }
 done
 ```
-
----
