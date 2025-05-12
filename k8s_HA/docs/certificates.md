@@ -12,6 +12,13 @@
 
 ## 🔧 Step 1: Set Host IPs & Service IP
 
+**Purpose:**
+- Extracts IP addresses from `/etc/hosts` for each control plane node and the load balancer.
+- Calculates the first service IP for the cluster (commonly `.1` in the service CIDR).
+
+**Why it matters in Kubernetes:**
+- These IPs are used in certificate SANs (Subject Alternative Names), especially for the API server certificate, so clients can trust the server.
+
 Use `getent` to resolve IPs from `/etc/hosts`:
 
 ```bash
@@ -35,7 +42,15 @@ echo "API_SERVICE: $API_SERVICE"
 
 ## 🔐 Step 2: Generate Certificates with OpenSSL
 
+Each certificate serves a specific Kubernetes component and enables **mutual TLS authentication**.
+
 ### 🔸 CA Certificate
+
+**Component:** Root Certificate Authority (CA)
+
+**Purpose:**  
+- Acts as the trusted root to sign all other certificates in the cluster.
+- Every component trusts the CA certificate (`ca.crt`) to verify each other.
 
 ```bash
 openssl genrsa -out ca.key 2048
@@ -50,6 +65,12 @@ openssl x509 -req -in ca.csr -signkey ca.key -CAcreateserial -out ca.crt -days 1
 
 ### 🔸 Admin Certificate
 
+**Component:** Human administrator
+
+**Purpose:**  
+- Allows `kubectl` clients to authenticate as a user in the `system:masters` group.
+- Grants full cluster access.
+
 ```bash
 openssl genrsa -out admin.key 2048
 openssl req -new -key admin.key -subj "/CN=admin/O=system:masters" -out admin.csr
@@ -62,6 +83,12 @@ openssl x509 -req -in admin.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out ad
 ---
 
 ### 🔸 Kube Controller Manager Certificate
+
+**Component:** `kube-controller-manager`
+
+**Purpose:**  
+- Authenticates the controller manager when it talks to the API server.
+- Identifies it with the CN `system:kube-controller-manager`.
 
 ```bash
 openssl genrsa -out kube-controller-manager.key 2048
@@ -78,6 +105,12 @@ openssl x509 -req -in kube-controller-manager.csr \
 
 ### 🔸 Kube Proxy Certificate
 
+**Component:** `kube-proxy`
+
+**Purpose:**  
+- Enables secure API communication from each worker node’s proxy process.
+- Identified as `system:kube-proxy`.
+
 ```bash
 openssl genrsa -out kube-proxy.key 2048
 openssl req -new -key kube-proxy.key \
@@ -93,6 +126,12 @@ openssl x509 -req -in kube-proxy.csr \
 
 ### 🔸 Kube Scheduler Certificate
 
+**Component:** `kube-scheduler`
+
+**Purpose:**  
+- Used by the scheduler to connect securely to the API server.
+- Uses CN `system:kube-scheduler`.
+
 ```bash
 openssl genrsa -out kube-scheduler.key 2048
 openssl req -new -key kube-scheduler.key \
@@ -106,6 +145,15 @@ openssl x509 -req -in kube-scheduler.csr -CA ca.crt -CAkey ca.key -CAcreateseria
 ---
 
 ### 🔸 Kubernetes API Server Certificate
+
+**Component:** `kube-apiserver`
+
+**Purpose:**  
+- Server-side certificate presented to clients (kubectl, controllers, etc.).
+- SANs include service name, cluster DNS names, load balancer IP, and local control plane IPs.
+
+**Config:**  
+- Created using a custom `openssl.cnf` to specify all required SANs.
 
 Create the `openssl.cnf`:
 
@@ -153,6 +201,12 @@ openssl x509 -req -in kube-apiserver.csr -CA ca.crt -CAkey ca.key -CAcreateseria
 
 ### 🔸 API Server to Kubelet Client Certificate
 
+**Component:** API server acting as a client to Kubelets
+
+**Purpose:**  
+- Lets the API server securely connect to kubelets on worker nodes to fetch logs, exec into pods, etc.
+- CN is `kube-apiserver-kubelet-client`.
+
 ```bash
 cat > openssl-kubelet.cnf <<EOF
 [req]
@@ -177,6 +231,12 @@ openssl x509 -req -in apiserver-kubelet-client.csr -CA ca.crt -CAkey ca.key -CAc
 ---
 
 ### 🔸 Etcd Server Certificate
+
+**Component:** `etcd`
+
+**Purpose:**  
+- Used by etcd servers to authenticate themselves.
+- SANs cover all control plane IPs and `127.0.0.1`.
 
 ```bash
 cat > openssl-etcd.cnf <<EOF
@@ -208,6 +268,12 @@ openssl x509 -req -in etcd-server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -
 
 ### 🔸 Service Account Certificate
 
+**Component:** Kubernetes service accounts
+
+**Purpose:**  
+- Signs service account tokens used by pods.
+- Enables authentication for workloads running in the cluster.
+
 ```bash
 openssl genrsa -out service-account.key 2048
 openssl req -new -key service-account.key \
@@ -224,6 +290,13 @@ openssl x509 -req -in service-account.csr -CA ca.crt -CAkey ca.key -CAcreateseri
 
 ### ▶️ Copy to **Control Plane Nodes**:
 
+**What’s sent:**
+- All certs for: API server, etcd, scheduler, controller manager, service accounts
+- CA cert + key
+
+**Why:**
+- Control plane components run locally and need mutual TLS to communicate.
+
 ```bash
 for instance in m1 m2 m3; do
   scp -o StrictHostKeyChecking=no \
@@ -238,6 +311,12 @@ done
 ```
 
 ### ▶️ Copy to **Worker Nodes**:
+
+**What’s sent:**
+- `kube-proxy` certs and the `ca.crt`
+
+**Why:**
+- Worker nodes need only what’s required to talk to the API securely.
 
 ```bash
 for instance in w1 w2 w3; do
