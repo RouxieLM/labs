@@ -52,15 +52,17 @@ Open PowerShell as Administrator and run:
 
 ## 🖥️ VM Inventory
 
-| Name         | Role          | IP Address     | CPUs | RAM    |
-|--------------|---------------|----------------|------|--------|
-| master-1     | Control Plane | 192.168.56.11  | 4    | 3072MB |
-| master-2     | Control Plane | 192.168.56.12  | 4    | 3072MB |
-| master-3     | Control Plane | 192.168.56.13  | 4    | 3072MB |
-| worker-1     | Node          | 192.168.56.21  | 2    | 2048MB |
-| worker-2     | Node          | 192.168.56.22  | 2    | 2048MB |
-| worker-3     | Node          | 192.168.56.23  | 2    | 2048MB |
-| loadbalancer | HAProxy       | 192.168.56.30  | 1    | 512MB  |
+| Name         | Role          | IP Address     | Host Alias | CPUs | RAM    |
+|--------------|---------------|----------------|------------|------|--------|
+| master-1     | Control Plane | 192.168.56.11  | m1         | 4    | 3072MB |
+| master-2     | Control Plane | 192.168.56.12  | m2         | 4    | 3072MB |
+| master-3     | Control Plane | 192.168.56.13  | m3         | 4    | 3072MB |
+| worker-1     | Node          | 192.168.56.21  | w1         | 2    | 2048MB |
+| worker-2     | Node          | 192.168.56.22  | w2         | 2    | 2048MB |
+| worker-3     | Node          | 192.168.56.23  | w3         | 2    | 2048MB |
+| loadbalancer | HAProxy       | 192.168.56.30  | lb         | 1    | 512MB  |
+
+> All nodes are accessible locally by their short alias names (e.g., `m1`, `w2`, `lb`), thanks to `/etc/hosts` entries.
 
 ---
 
