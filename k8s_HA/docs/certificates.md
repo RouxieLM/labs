@@ -191,7 +191,8 @@ subjectAltName = @alt_names
 [alt_names]
 IP.1 = ${CONTROL01}
 IP.2 = ${CONTROL02}
-IP.3 = 127.0.0.1
+IP.3 = ${CONTROL03}
+IP.4 = 127.0.0.1
 EOF
 
 openssl genrsa -out etcd-server.key 2048
