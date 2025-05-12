@@ -98,27 +98,3 @@ done
 ```
 
 ---
-
-## 📘 Notes
-
-- Ensure `~/.ssh/known_hosts` does not block your `scp` with unknown hosts — hence the use of `-o StrictHostKeyChecking=no`.
-- The file `openssl.cnf` is crucial for correct SAN values on the API server cert. Missing or incorrect SANs will cause TLS failures in your cluster.
-- This is part of a manual Kubernetes installation ("Kubernetes the Hard Way"-style).
-
----
-
-## 📚 References
-
-- [Kubernetes the Hard Way (by Kelsey Hightower)](https://github.com/kelseyhightower/kubernetes-the-hard-way)
-- [cfssl (optional tool for cert management)](https://github.com/cloudflare/cfssl)
-- [OpenSSL Docs](https://www.openssl.org/docs/)
-
----
-
-## ✅ Next Steps
-
-- Install Kubernetes components (`kubeadm`, `kubelet`, `kubectl`) on each node
-- Manually initialize the cluster and join control/worker nodes
-- Configure kubeconfigs and RBAC
-
-Happy hacking! 🔧☸️
