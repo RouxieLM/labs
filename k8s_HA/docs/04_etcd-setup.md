@@ -1,39 +1,8 @@
 # ⚙️ Manual etcd Installation & Configuration on Control Plane Nodes
 
-This guide details how to manually install and configure an `etcd` cluster on Kubernetes control plane nodes (`m1`, `m2`, `m3`), including **TLS setup**, **systemd service**, and **tmux usage** for multi-host orchestration.
+This guide details how to manually install and configure an `etcd` cluster on Kubernetes control plane nodes (`m1`, `m2`, `m3`), including **TLS setup** and **systemd service**.
 
----
-
-## 🪟 Use `tmux` for Multi-Node Setup (Optional)
-
-`tmux` lets you manage multiple terminal sessions in a single window, ideal for setting up `etcd` on multiple nodes simultaneously.
-
-### 📌 Install tmux
-
-```bash
-sudo apt install tmux
-```
-
-### 📋 Common `tmux` commands
-
-| Action                    | Command                        |
-|---------------------------|--------------------------------|
-| Start new session         | `tmux new -s etcd-setup`       |
-| Split window (horizontal) | `Ctrl-b "`                     |
-| Split window (vertical)   | `Ctrl-b %`                     |
-| Move between panes        | `Ctrl-b + arrow key`           |
-| Sync input to all panes   | `Ctrl-b :setw synchronize-panes on` |
-| Disable sync              | `Ctrl-b :setw synchronize-panes off` |
-| Detach session            | `Ctrl-b d`                     |
-| Reattach later            | `tmux attach -t etcd-setup`    |
-
-### 🧪 Example use case:
-
-1. `tmux new -s etcd-setup`
-2. Split into 3 vertical panes: SSH into `m1`, `m2`, `m3`
-3. Enable input sync across panes
-4. Paste installation and configuration steps — they run on all nodes at once
-
+You can use **tmux** or any multi-exec tool for multi-host orchestration, as these commands must be executed on each master node.
 ---
 
 ## 📦 Step 1: Download and Install etcd
