@@ -1,4 +1,4 @@
-# ⚙️ Kubernetes Master Node Setup: System Prep, Container Runtime, and Kube Tools
+# ⚙️ Kubernetes Worker Node Setup: System Prep, Container Runtime, and Kube Tools
 
 This guide walks through configuring each Kubernetes **control plane node** with necessary kernel modules, sysctl settings, containerd runtime, and the Kubernetes package repository.
 
