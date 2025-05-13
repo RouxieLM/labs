@@ -39,7 +39,7 @@ sudo apt install tmux
 ## 📦 Step 1: Download and Install etcd
 
 ```bash
-ETCD_VERSION="v3.5.9"
+ETCD_VERSION="v3.5.21"
 ARCH="amd64"  # or "arm64" depending on your system
 
 wget -q --show-progress --https-only --timestamping \
@@ -79,7 +79,7 @@ CONTROL02=$(getent hosts m2 | awk '{ print $1 }')
 CONTROL03=$(getent hosts m3 | awk '{ print $1 }')
 
 ETCD_NAME=$(hostname -s)
-PRIMARY_IP=$(getent hosts $(hostname -s) | awk '{ print $1 }')
+PRIMARY_IP=$(hostname -I | grep -o '192\.168\.[0-9]\+\.[0-9]\+')
 ```
 
 ---
@@ -87,14 +87,14 @@ PRIMARY_IP=$(getent hosts $(hostname -s) | awk '{ print $1 }')
 ## 🧾 Step 4: Create the systemd Unit File
 
 ```bash
-cat <<EOF | sudo tee /etc/systemd/system/etcd.service
+cat <<EOF > etcd.service
 [Unit]
 Description=etcd
 Documentation=https://github.com/coreos
 
 [Service]
 ExecStart=/usr/local/bin/etcd \\
-  --name \${ETCD_NAME} \\
+  --name ${ETCD_NAME} \\
   --cert-file=/etc/etcd/etcd-server.crt \\
   --key-file=/etc/etcd/etcd-server.key \\
   --peer-cert-file=/etc/etcd/etcd-server.crt \\
@@ -103,12 +103,12 @@ ExecStart=/usr/local/bin/etcd \\
   --peer-trusted-ca-file=/etc/etcd/ca.crt \\
   --peer-client-cert-auth \\
   --client-cert-auth \\
-  --initial-advertise-peer-urls https://\${PRIMARY_IP}:2380 \\
-  --listen-peer-urls https://\${PRIMARY_IP}:2380 \\
-  --listen-client-urls https://\${PRIMARY_IP}:2379,https://127.0.0.1:2379 \\
-  --advertise-client-urls https://\${PRIMARY_IP}:2379 \\
+  --initial-advertise-peer-urls https://${PRIMARY_IP}:2380 \\
+  --listen-peer-urls https://${PRIMARY_IP}:2380 \\
+  --listen-client-urls https://${PRIMARY_IP}:2379,https://127.0.0.1:2379 \\
+  --advertise-client-urls https://${PRIMARY_IP}:2379 \\
   --initial-cluster-token etcd-cluster-0 \\
-  --initial-cluster controlplane01=https://\${CONTROL01}:2380,controlplane02=https://\${CONTROL02}:2380 \\
+  --initial-cluster master-1=https://${CONTROL01}:2380,master-2=https://${CONTROL02}:2380,master-3=https://${CONTROL03}:2380 \\
   --initial-cluster-state new \\
   --data-dir=/var/lib/etcd
 Restart=on-failure
@@ -117,6 +117,10 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
+
+sudo mv etcd.service /etc/systemd/system/etcd.service
+sudo chown root:root /etc/systemd/system/etcd.service
+sudo chmod 644 /etc/systemd/system/etcd.service
 ```
 
 ---
@@ -139,35 +143,6 @@ sudo ETCDCTL_API=3 etcdctl member list \
   --cacert=/etc/etcd/ca.crt \
   --cert=/etc/etcd/etcd-server.crt \
   --key=/etc/etcd/etcd-server.key
-```
-
----
-
-## 🪟 Optional: Use `tmux` for Parallel Setup Across Nodes
-
-### 📌 Why use `tmux`?
-- Run the same setup in parallel across multiple control plane nodes.
-- Keep sessions open if your SSH disconnects.
-
-### 🧰 Basic `tmux` commands
-
-| Action | Command |
-|--------|---------|
-| Start new session | `tmux new -s etcd-setup` |
-| Split window (horizontal) | `Ctrl-b "` |
-| Split window (vertical) | `Ctrl-b %` |
-| Move between panes | `Ctrl-b + arrow key` |
-| Synchronize input to all panes | `Ctrl-b :setw synchronize-panes on` |
-| Exit sync mode | `Ctrl-b :setw synchronize-panes off` |
-| Detach | `Ctrl-b d` |
-| Reattach | `tmux attach -t etcd-setup` |
-
-```bash
-# Example usage:
-tmux new -s etcd-setup
-# Split into 3 vertical panes (one per node)
-# SSH into m1, m2, m3 in each pane
-# Enable synchronize-panes and paste setup steps once
 ```
 
 ---
