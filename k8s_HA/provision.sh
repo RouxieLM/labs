@@ -69,12 +69,12 @@ fi
 
 log "Updating /etc/hosts for cluster node resolution..."
 cat <<EOF >> /etc/hosts
-192.168.56.11 m1
-192.168.56.12 m2
-192.168.56.13 m3
-192.168.56.21 w1
-192.168.56.22 w2
-192.168.56.23 w3
-192.168.56.30 lb
+192.168.56.11 m1 master-1
+192.168.56.12 m2 master-2
+192.168.56.13 m3 master-3
+192.168.56.21 w1 worker-1
+192.168.56.22 w2 worker-2
+192.168.56.23 w3 worker-3
+192.168.56.30 lb loadbalancer
 EOF
 ok "/etc/hosts updated."
