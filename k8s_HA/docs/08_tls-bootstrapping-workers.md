@@ -15,9 +15,9 @@ Bootstrapping allows new worker nodes to securely join the cluster using a tempo
 Ensure the API server accepts bootstrap tokens and that the controller-manager can sign CSRs:
 
 ```bash
-grep 'enable-bootstrap-token-auth=true' /etc/systemd/system/kube-apiserver.service
-grep '--cluster-signing-cert-file=/var/lib/kubernetes/ca.crt' /etc/systemd/system/kube-controller-manager.service
-grep '--cluster-signing-key-file=/var/lib/kubernetes/ca.key' /etc/systemd/system/kube-controller-manager.service
+grep 'enable-bootstrap-token-auth=true' /etc/systemd/system/kube-apiserver.service && \
+grep 'cluster-signing-cert-file=/var/lib/kubernetes/pki/ca.crt' /etc/systemd/system/kube-controller-manager.service && \
+grep 'cluster-signing-key-file=/var/lib/kubernetes/pki/ca.key' /etc/systemd/system/kube-controller-manager.service
 ```
 
 These confirm that token-based auth and certificate signing are properly configured.
