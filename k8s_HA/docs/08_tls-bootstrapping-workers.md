@@ -194,6 +194,9 @@ EOF
 This config file defines authentication, authorization, DNS, cgroups, and TLS bootstrapping.
 
 ```bash
+SERVICE_CIDR=10.96.0.0/16
+CLUSTER_DNS=$(echo $SERVICE_CIDR | awk 'BEGIN {FS="."} ; { printf("%s.%s.%s.10", $1, $2, $3) }')
+
 cat <<EOF | sudo tee /var/lib/kubelet/kubelet-config.yaml
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
@@ -226,6 +229,8 @@ EOF
 This systemd unit will run the kubelet using the bootstrap token until it receives a client cert.
 
 ```bash
+PRIMARY_IP=$(hostname -I | grep -o '192\.168\.[0-9]\+\.[0-9]\+')
+
 cat <<EOF | sudo tee /etc/systemd/system/kubelet.service
 [Unit]
 Description=Kubernetes Kubelet
@@ -256,6 +261,8 @@ EOF
 Kube-proxy handles routing and service IP NAT for pods.
 
 ```bash
+POD_CIDR=10.244.0.0/16
+
 cat <<EOF | sudo tee /var/lib/kube-proxy/kube-proxy-config.yaml
 kind: KubeProxyConfiguration
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
