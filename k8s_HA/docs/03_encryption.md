@@ -1,4 +1,3 @@
-```markdown
 # 🔐 Kubernetes Secrets Encryption at Rest Configuration
 
 This guide explains how to generate and deploy an **encryption configuration** to enable **Secrets encryption at rest** in a Kubernetes cluster.
@@ -106,5 +105,3 @@ Kubernetes will:
 | Create encryption config | Instructs kube-apiserver how to encrypt secrets |
 | Copy to control planes | Ensures all kube-apiservers use the same config |
 | Move to correct path | Required for kube-apiserver to pick it up on boot |
-
-```
