@@ -36,8 +36,6 @@ sudo apt install tmux
 
 ---
 
----
-
 ## 📦 Step 1: Download and Install etcd
 
 ```bash
