@@ -315,5 +315,3 @@ kubectl get csr --kubeconfig admin.kubeconfig
 kubectl certificate approve <csr-name> --kubeconfig admin.kubeconfig
 kubectl get nodes --kubeconfig admin.kubeconfig
 ```
-
-> 🎉 After CSR approval, the worker node should show up as `Ready`.
