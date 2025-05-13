@@ -198,10 +198,13 @@ sudo chmod 644 /etc/systemd/system/kube-scheduler.service
 
 ---
 
-## 🔒 Step 7: Secure Kubeconfig Files
+## 🔒 Step 7: Secure Kubeconfig and encryption Files
 
 ```bash
+sudo chown root:root /var/lib/kubernetes/encryption-config.yaml
+sudo chown root:root /var/lib/kubernetes/*.kubeconfig
 sudo chmod 600 /var/lib/kubernetes/*.kubeconfig
+sudo chmod 600 /var/lib/kubernetes/encryption-config.yaml
 ```
 
 ---

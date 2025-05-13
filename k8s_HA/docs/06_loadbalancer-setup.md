@@ -61,8 +61,6 @@ EOF
 - **Backend**: Forwards requests to all control plane nodes using **round-robin**
 - **Health checks**: Ensure that traffic is sent only to healthy nodes
 
-> 🔧 **Note:** Fixed a typo — the third server was also named `controlplane02`; changed to `controlplane03`.
-
 ---
 
 ## 🔄 Step 4: Restart HAProxy
