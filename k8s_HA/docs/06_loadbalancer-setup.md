@@ -51,9 +51,9 @@ backend kubernetes-controlplane-nodes
     mode tcp
     balance roundrobin
     option tcp-check
-    server controlplane01 ${CONTROL01}:6443 check fall 3 rise 2
-    server controlplane02 ${CONTROL02}:6443 check fall 3 rise 2
-    server controlplane03 ${CONTROL03}:6443 check fall 3 rise 2
+    server master-1 ${CONTROL01}:6443 check fall 3 rise 2
+    server master-2 ${CONTROL02}:6443 check fall 3 rise 2
+    server master-3 ${CONTROL03}:6443 check fall 3 rise 2
 EOF
 ```
 
