@@ -2,7 +2,7 @@
 
 This guide explains how to **manually install and configure Kubernetes control plane components** — `kube-apiserver`, `kube-controller-manager`, and `kube-scheduler` — using official binaries and systemd unit files.
 
-You can use **tmux** or any multi-exec tool for multi-host orchestration, as these commands must be executed on each master node.
+You can use **tmux** or any multi-exec tool for multi-host orchestration, as these commands must be executed on each **master** node.
 
 ---
 

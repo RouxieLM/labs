@@ -2,7 +2,7 @@
 
 This guide details how to manually install and configure an `etcd` cluster on Kubernetes control plane nodes (`m1`, `m2`, `m3`), including **TLS setup** and **systemd service**.
 
-You can use **tmux** or any multi-exec tool for multi-host orchestration, as these commands must be executed on each master node.
+You can use **tmux** or any multi-exec tool for multi-host orchestration, as these commands must be executed on each **master** node.
 
 ---
 
