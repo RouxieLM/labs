@@ -21,7 +21,7 @@ You can use **tmux** or any multi-exec tool for multi-host orchestration, as the
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y apt-transport-https ca-certificates curl
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 ```
 
 ---
