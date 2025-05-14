@@ -18,7 +18,7 @@ else
 fi
 
 log "Installing default tools: curl, wget, vim, net-tools..."
-if apt-get install curl wget vim net-tools -y; then
+if apt-get install curl wget vim net-tools htop -y; then
   ok "Default tools installed."
 else
   error "Tool installation failed."
