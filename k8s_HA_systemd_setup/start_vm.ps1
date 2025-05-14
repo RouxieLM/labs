@@ -1,5 +1,5 @@
 # Define working directory and VM names
-$loc = "F:\Repo\labs\k8s_HA"
+$loc = "F:\Repo\labs\k8s_HA_systemd_setup"
 $logFile = "$loc\vagrant-provisioning.log"
 
 $vmList = @(
