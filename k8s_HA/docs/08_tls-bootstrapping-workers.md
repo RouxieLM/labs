@@ -215,7 +215,6 @@ clusterDomain: "cluster.local"
 clusterDNS:
   - ${CLUSTER_DNS}
 registerNode: true
-resolvConf: /etc/resolv.conf
 rotateCertificates: true
 runtimeRequestTimeout: "15m"
 serverTLSBootstrap: true
