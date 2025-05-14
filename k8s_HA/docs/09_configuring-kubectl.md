@@ -65,9 +65,18 @@ kubectl config use-context k8s-ha
 - The context binds the cluster and user
 - It's activated as the current working context
 
+### 5. ▶️ Copy Config File to m2 and m3
+
+```bash
+for instance in m2 m3; do
+  scp admin.crt admin.key ${instance}:~/ || { echo "❌ Failed to copy to $instance"; exit 1; }
+  scp .kube/config ${instance}:~/.kube/ || { echo "❌ Failed to copy to $instance"; exit 1; }
+done
+```
+
 ---
 
-### 5. ✅ Verify Cluster Access
+### 6. ✅ Verify Cluster Access
 
 Check that the admin user can communicate with the API server and the cluster is healthy:
 

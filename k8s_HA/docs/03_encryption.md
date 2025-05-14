@@ -57,7 +57,7 @@ EOF
 ## 🚚 Step 3: Distribute the Encryption Configuration to All Control Plane Nodes
 
 ```bash
-for instance in m1 m2 m3; do
+for instance in m2 m3; do
   scp encryption-config.yaml ${instance}:~/
 done
 ```
@@ -71,7 +71,7 @@ done
 ## 📁 Step 4: Move the Config File into the Correct Location on Each Control Plane Node
 
 ```bash
-for instance in m1 m2 m3; do
+for instance in m2 m3; do
   ssh ${instance} sudo mkdir -p /var/lib/kubernetes/
   ssh ${instance} sudo mv encryption-config.yaml /var/lib/kubernetes/
 done

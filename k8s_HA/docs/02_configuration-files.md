@@ -190,7 +190,7 @@ done
 - **Used by:** Each component locally on every control plane node.
 
 ```bash
-for instance in m1 m2 m3; do
+for instance in m2 m3; do
   scp admin.kubeconfig kube-controller-manager.kubeconfig kube-scheduler.kubeconfig ${instance}:~/
 done
 ```

@@ -298,7 +298,7 @@ openssl x509 -req -in service-account.csr -CA ca.crt -CAkey ca.key -CAcreateseri
 - Control plane components run locally and need mutual TLS to communicate.
 
 ```bash
-for instance in m1 m2 m3; do
+for instance in m2 m3; do
   scp -o StrictHostKeyChecking=no \
     ca.crt ca.key kube-apiserver.key kube-apiserver.crt \
     apiserver-kubelet-client.crt apiserver-kubelet-client.key \
