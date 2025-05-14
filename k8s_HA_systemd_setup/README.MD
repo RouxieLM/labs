@@ -1,6 +1,7 @@
-# 🚀 Setup a Kubernetes HA Cluster Locally with Vagrant & VirtualBox
+# 🚀 Setup a Kubernetes HA Cluster with Systemd Services (Locally via Vagrant & VirtualBox)
 
-This project sets up a **High Availability (HA) Kubernetes Cluster** on your local machine using **Vagrant** and **VirtualBox**.  
+This project sets up a **High Availability (HA) Kubernetes Cluster** on your local machine using **Vagrant** and **VirtualBox**, deploying control plane components as **systemd services**.
+
 It provisions 7 VMs: 3 master nodes, 3 worker nodes, and 1 load balancer.
 
 ---
@@ -30,7 +31,7 @@ It provisions 7 VMs: 3 master nodes, 3 worker nodes, and 1 load balancer.
 ```bash
 # Clone the repository
 git clone https://your.repo.url.git
-cd k8s_HA
+cd k8s_HA_systemd_setup_setup
 
 # Start all VMs (master-1 starts first for SSH key propagation)
 vagrant up
@@ -76,6 +77,20 @@ Open PowerShell as Administrator and run:
 
 ---
 
+## ⚙️ Control Plane Deployment Method
+
+This setup uses **systemd services** (via manifest files in `/etc/systemd/system/`) to deploy:
+
+- `kube-apiserver`
+- `kube-controller-manager`
+- `kube-scheduler`
+
+These components are managed by systemd on each control plane node.
+
+> If you're looking for the **systemd-based** setup instead, check the [`k8s_HA_systemd_setup`](../k8s_HA_systemd_setup/) folder.
+
+---
+
 ## 🧹 Cleanup
 
 ```bash
@@ -91,4 +106,4 @@ vagrant provision
 ## 🧠 Notes
 
 - VMs use static IPs in the `192.168.56.X` range (private network).
-- Kubernetes is **not** installed by default. Use this as a base for manual or scripted Kubernetes deployment.
+- Kubernetes is **not** installed by default. Use this as a base for manual or scripted Kubernetes deployment using static pod manifests.
